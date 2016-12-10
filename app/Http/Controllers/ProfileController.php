@@ -12,18 +12,9 @@ use Code\Models\User;
 use Illuminate\Http\Request;
 use Auth;
 use Image;
+
 class ProfileController extends Controller
 {
-    public function getProfile($username)
-    {
-        $user = User::where('username', $username)->first();
-        if (!$user) {
-            abort(404);
-        }
-        return view('profile.index', ['user' => $user])
-            ->with('user', $user);
-    }
-
     public function getEdit()
     {
         return view('profile.edit');
@@ -39,7 +30,6 @@ class ProfileController extends Controller
             'username' => 'required|alpha_dash|max:20|unique:users,username,' . Auth::user()->id,
             'birthday' => 'required|max:20',
             'phone' => 'required',
-            'captcha' => 'required|min:1'
         ]);
 
         if ($request->hasFile('avatar')) {
@@ -60,6 +50,7 @@ class ProfileController extends Controller
             'birthday' => $request->input('birthday'),
             'phone' => $request->input('phone')
         ]);
+
 
         return redirect()->route('profile.edit')->with('info', 'Вы успешно обновили профиль');
     }

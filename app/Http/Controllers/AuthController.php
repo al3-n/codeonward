@@ -11,6 +11,7 @@ namespace Code\Http\Controllers;
 use Code\Models\User;
 
 use Auth;
+use Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
@@ -44,6 +45,13 @@ class AuthController extends Controller
             'password' => bcrypt($request->input('password')),
             'phone' => $request->input('phone')
         ]);
+
+        Mail::send('email.register', ['user' => $request->input('username')], function ($m) use ($request) {
+            $m->from('spfortesting@gmail.com', 'Your Application');
+
+            $m->to($request->input('email'), $request->input('username'))->subject('Регистрация');
+        });
+
 
         return redirect()->route('home')->with('info', 'Вы успешно зарегистрировались, теперь можно войти');
     }
